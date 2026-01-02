@@ -1,6 +1,7 @@
 package com.example.restaurant.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
 
     // Lấy tất cả món (bao gồm cả không available, dùng cho admin)
     List<MenuItem> findAllByOrderByCategory_SortOrderAscNameAsc();
+
+   Optional<MenuItem> findByName(String name);
 }

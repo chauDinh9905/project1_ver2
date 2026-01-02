@@ -3,6 +3,8 @@ package com.example.restaurant.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,6 +23,7 @@ public class Category {
     @Column(name = "sort_order")
     private Integer sortOrder = 0;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<MenuItem> menuItems = new ArrayList<>();    
 }

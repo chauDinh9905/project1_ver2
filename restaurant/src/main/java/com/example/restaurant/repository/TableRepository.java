@@ -8,4 +8,8 @@ import com.example.restaurant.entity.TableEntity;
 
 public interface TableRepository extends JpaRepository<TableEntity, Integer> {
     List<TableEntity> findAllByOrderByIdAsc();
+
+    List<TableEntity> findAllByCapacity(Integer capacity);
+
+    List<TableEntity> findAllByStatus(String status);
 }
