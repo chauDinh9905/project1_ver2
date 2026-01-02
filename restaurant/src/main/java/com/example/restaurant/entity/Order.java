@@ -42,7 +42,12 @@ public class Order {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem item) {
+    this.orderItems.add(item);
+    item.setOrder(this); 
+    }
 }

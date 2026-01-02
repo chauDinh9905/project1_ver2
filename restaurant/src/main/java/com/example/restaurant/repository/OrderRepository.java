@@ -5,6 +5,8 @@ import java.util.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.restaurant.entity.Order;
+//import com.example.restaurant.entity.TableEntity;
+
 import java.util.List;
 
 
@@ -14,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     // Lấy tất cả đơn của một bàn (dùng cho lịch sử nếu cần sau)
     List<Order> findByTableIdOrderByCreateAtDesc(Integer tableId);
     List<Order> findByStatus(String status);
+    Optional<Order> findByTableId(Integer tableId);
+    Integer countByTableId(Integer tableId);
 }
