@@ -60,6 +60,12 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency> <!-- Nếu cần test security nâng cao, thêm cái này (tùy chọn) -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
