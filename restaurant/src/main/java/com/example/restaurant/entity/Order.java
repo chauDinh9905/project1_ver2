@@ -47,7 +47,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItem item) {
-    this.orderItems.add(item);
-    item.setOrder(this); 
+       this.orderItems.add(item);
+       item.setOrder(this); 
     }
 }
