@@ -1,6 +1,7 @@
 package com.example.dto.request;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Size;
 
 
 @Data
+@NoArgsConstructor
 public class CreateMenuItemRequest {
     @NotBlank(message = "Tên món ăn không được để trống")
     @Size(max = 200, message = "Tên món ăn không được quá 200 ký tự")
@@ -25,7 +27,7 @@ public class CreateMenuItemRequest {
     @Size(max = 500, message = "link ảnh không quá 500 ký tự")
     private String image;
 
-    private Boolean available = true;
+    private boolean available = true;
 
     @NotNull(message = "id kiểu món ăn không được để trống (1: Khai vị, 2: Món chính, 3: Tráng miệng, 4: Đồ uống")
     private Integer categoryId;

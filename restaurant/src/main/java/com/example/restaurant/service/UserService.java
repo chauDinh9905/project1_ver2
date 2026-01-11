@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.example.restaurant.entity.User;
 import com.example.restaurant.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -20,6 +22,7 @@ public class UserService {
         return userRepository.findByUserName(name).orElseThrow(()->new RuntimeException("tên đăng nhập admin không đúng"));
     }
 
+    @Transactional
     public User createUser(String userName, String password){
         User user = new User();
         user.setUserName(userName);
@@ -32,6 +35,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateUser(Integer userId, User newUser){
        User oldUser = getUserById(userId);
        if(newUser.getUserName() != null){
@@ -46,10 +50,12 @@ public class UserService {
        return userRepository.save(oldUser);
     }
 
+
     public boolean existsByUserName(String userName) {
         return userRepository.existsByUserName(userName);
     }
 
+    @Transactional
     public void deleteUser(Integer id){
         User user = getUserById(id);
         userRepository.delete(user);
