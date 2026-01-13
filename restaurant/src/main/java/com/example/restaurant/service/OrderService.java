@@ -16,10 +16,12 @@ import com.example.restaurant.repository.TableRepository;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
+    private final WebSocketNotificationService wsNotificationService;
 
-    public OrderService(OrderRepository orderRepository1, TableRepository tableRepository1){
+    public OrderService(OrderRepository orderRepository1, TableRepository tableRepository1, WebSocketNotificationService wsNotificationService1){
         this.orderRepository = orderRepository1;
         this.tableRepository = tableRepository1;
+        this.wsNotificationService = wsNotificationService1;
     }
 
     public Order getOrderById(Integer id){
@@ -50,12 +52,17 @@ public class OrderService {
             totalprice = totalprice.add(itemPrice);
         }
         newOrder.setTotalPrice(totalprice);
-        return orderRepository.save(newOrder);
+        Order savedOrder = orderRepository.save(newOrder);
+        wsNotificationService.sendOrderUpdate(tableId);
+        wsNotificationService.sendTableStatusUpdate();
+        wsNotificationService.sendAdminDashboardUpdate();
+        return savedOrder;
     }
 
     @Transactional
     public Order updateOrder(Integer id, Order O){
         Order oldO = getOrderById(id);
+        Integer tableId = oldO.getTable().getId();
         if(O.getStatus() != null){
             oldO.setStatus(O.getStatus());
         }
@@ -74,7 +81,10 @@ public class OrderService {
             //oldO.setOrderItems(O.getOrderItems());
             oldO.setTotalPrice(newTotal);
         }
-        return orderRepository.save(oldO);
+        Order newOrder = orderRepository.save(oldO);
+        wsNotificationService.sendOrderUpdate(tableId);
+        wsNotificationService.sendAdminDashboardUpdate();
+        return newOrder;
     }
 
     @Transactional
@@ -88,5 +98,57 @@ public class OrderService {
             table.setStatus("AVAILABLE");
             tableRepository.save(table);
         }
+        wsNotificationService.sendOrderUpdate(tableId);
+        wsNotificationService.sendTableStatusUpdate();
+        wsNotificationService.sendAdminDashboardUpdate();
+    }
+
+    @Transactional
+    public Order createOrder(Integer tableId, List<OrderItem> items, String notes) { 
+        TableEntity table = tableRepository.findById(tableId)
+                .orElseThrow(() -> new RuntimeException("Bàn không tồn tại"));
+
+        // Optional: check nếu bàn đang AVAILABLE mới cho tạo (tránh tạo nhiều order active cùng lúc)
+        if ("OCCUPIED".equals(table.getStatus())) {
+            int activeCount = orderRepository.countByTableIdAndStatusNot(tableId, "COMPLETED");
+            if (activeCount > 0) {
+                throw new RuntimeException("Bàn đang có đơn hàng đang xử lý");
+            }
+        }
+
+        Order newOrder = new Order();
+        newOrder.setTable(table);
+        newOrder.setStatus("PENDING"); // default
+        newOrder.setNotes(notes);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem item : items) {
+            item.setOrder(newOrder);
+            newOrder.getOrderItems().add(item);
+            total = total.add(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        newOrder.setTotalPrice(total);
+        Order savedOrder = orderRepository.save(newOrder);
+
+        if ("AVAILABLE".equals(table.getStatus())) {
+            table.setStatus("OCCUPIED");
+            tableRepository.save(table);
+        }
+        wsNotificationService.sendOrderUpdate(tableId);
+        wsNotificationService.sendTableStatusUpdate();
+        wsNotificationService.sendAdminDashboardUpdate();
+        return savedOrder;
+    }
+
+    @Transactional
+    public Order updateOrderStatus(Integer orderId, String newStatus) {
+        Order order = getOrderById(orderId);
+        order.setStatus(newStatus);
+        Order updated = orderRepository.save(order);
+        
+        wsNotificationService.sendOrderUpdate(order.getTable().getId());
+        wsNotificationService.sendAdminDashboardUpdate();
+        
+        return updated;
     }
 }

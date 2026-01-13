@@ -50,16 +50,17 @@ public class SecurityConfig {
                 // Public endpoints - không cần authentication
                 .requestMatchers(
                     "/api/auth/**",           // Login endpoint
-                    "/api/tables",            // Khách xem danh sách bàn
-                    "/api/tables/{id}",       // Khách xem chi tiết bàn
-                    "/api/menu/**",           // Khách xem menu
-                    "/api/categories/**",     // Khách xem categories
+                    "/api/table/**",            // Khách xem danh sách bàn
+                    "/api/table/id",       // Khách xem chi tiết bàn
+                    "/api/menu-item/all/**",           // Khách xem menu
+                    "/api/menu-item/all/categoryId",  // khách xem menu theo categoryId
+                    "/api/category/**",     // Khách xem categories
                     "/api/orders/table/**",   // Khách xem order của bàn mình
                     "/ws/**"                  // WebSocket connection
                 ).permitAll()
                 
                 // Cho phép POST order (khách tạo đơn)
-                .requestMatchers(HttpMethod.POST, "/api/orders").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/order/**").permitAll()
                 
                 // Protected endpoints - cần ADMIN role
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

@@ -3,6 +3,8 @@ package com.example.restaurant.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,10 +22,17 @@ import com.example.restaurant.service.MenuItemService;
 
 @RestController
 @RequestMapping("/api/menu-item")
+@CrossOrigin(origins = "*")
 public class MenuItemController {
     private final MenuItemService menuItemService;
     public MenuItemController(MenuItemService menuItemService){
         this.menuItemService = menuItemService;
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<MenuItem>> getAvailableMenuItems() {
+        List<MenuItem> items = menuItemService.gettAllMenuItemAvailable();
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/{id}")
