@@ -55,7 +55,8 @@ public class SecurityConfig {
                     "/api/menu-item/all/**",           // Khách xem menu
                     "/api/menu-item/all/categoryId",  // khách xem menu theo categoryId
                     "/api/category/**",     // Khách xem categories
-                    "/api/orders/table/**",   // Khách xem order của bàn mình
+                    "/api/order/table/**",   // Khách xem order của bàn mình
+                    "/api/order/**",
                     "/ws/**"                  // WebSocket connection
                 ).permitAll()
                 

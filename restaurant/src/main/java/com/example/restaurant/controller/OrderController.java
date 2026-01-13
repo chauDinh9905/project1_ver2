@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.dto.request.CreateOrderRequest;
 import com.example.restaurant.entity.Order;
 import com.example.restaurant.entity.OrderItem;
 import com.example.restaurant.service.OrderService;
@@ -34,7 +35,7 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Order> createOrder(@RequestParam Integer tableId, @RequestBody CreateOrderRequest request) {
-            Order order = orderService.createOrder(tableId, request.getItems(), request.getNotes());
+            Order order = orderService.createOrderFromRequest(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
@@ -97,7 +98,7 @@ public class OrderController {
         return orderService.getOrderByStatus(status);
     }
 
-    @PostMapping("/{tableId}")
+    @PostMapping("/table/{tableId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Order creatOrder(@PathVariable Integer tableId, @RequestBody List<OrderItem> O){
         return orderService.createOrder(tableId, O);
@@ -112,26 +113,5 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public void deleteOrder(@PathVariable Integer id){
         orderService.deleteOrder(id);
-    }
-
-    public static class CreateOrderRequest {
-        private List<OrderItem> items;
-        private String notes;
-        
-        public List<OrderItem> getItems() {
-            return items;
-        }
-        
-        public void setItems(List<OrderItem> items) {
-            this.items = items;
-        }
-        
-        public String getNotes() {
-            return notes;
-        }
-        
-        public void setNotes(String notes) {
-            this.notes = notes;
-        }
     }
 }

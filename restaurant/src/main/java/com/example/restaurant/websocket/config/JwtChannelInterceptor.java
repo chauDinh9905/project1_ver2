@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.example.restaurant.security.JwtTokenProvider; // class JWT của bạn (giả sử ở security package)
+import com.example.restaurant.security.JwtTokenProvider;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                     }
                 }
             }
-            // Nếu không có hoặc token invalid → vẫn connect được (guest, user = null)
+            // Nếu không có hoặc token invalid thì vẫn connect được (guest, user = null), thử thôi .___.
         }
 
         return message;

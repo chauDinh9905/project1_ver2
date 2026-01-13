@@ -1,14 +1,19 @@
 package com.example.restaurant.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.dto.request.CreateOrderItemRequest;
+import com.example.dto.request.CreateOrderRequest;
+import com.example.restaurant.entity.MenuItem;
 import com.example.restaurant.entity.Order;
 import com.example.restaurant.entity.OrderItem;
 import com.example.restaurant.entity.TableEntity;
+import com.example.restaurant.repository.MenuItemRepository;
 import com.example.restaurant.repository.OrderRepository;
 import com.example.restaurant.repository.TableRepository;
 
@@ -16,11 +21,13 @@ import com.example.restaurant.repository.TableRepository;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
+    private final MenuItemRepository menuItemRepository;
     private final WebSocketNotificationService wsNotificationService;
 
-    public OrderService(OrderRepository orderRepository1, TableRepository tableRepository1, WebSocketNotificationService wsNotificationService1){
+    public OrderService(OrderRepository orderRepository1, TableRepository tableRepository1, MenuItemRepository menuItemRepository1, WebSocketNotificationService wsNotificationService1){
         this.orderRepository = orderRepository1;
         this.tableRepository = tableRepository1;
+        this.menuItemRepository = menuItemRepository1;
         this.wsNotificationService = wsNotificationService1;
     }
 
@@ -150,5 +157,26 @@ public class OrderService {
         wsNotificationService.sendAdminDashboardUpdate();
         
         return updated;
+    }
+
+    @Transactional
+    public Order createOrderFromRequest(CreateOrderRequest request) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        
+        for (CreateOrderItemRequest itemReq : request.getItems()) {
+            MenuItem menuItem = menuItemRepository.findById(itemReq.getMenuItemId())
+                .orElseThrow(() -> new RuntimeException("Món ăn ID " + itemReq.getMenuItemId() + " không tồn tại"));
+            
+            OrderItem orderItem = new OrderItem();
+            orderItem.setMenuItem(menuItem);
+            orderItem.setQuantity(itemReq.getQuantity());
+            orderItem.setPrice(menuItem.getPrice()); // Lấy giá từ menu
+            orderItem.setNotes(itemReq.getNotes());
+            
+            orderItems.add(orderItem);
+        }
+        
+        // Gọi method createOrder đã có
+        return createOrder(request.getTableId(), orderItems, request.getNotes());
     }
 }
