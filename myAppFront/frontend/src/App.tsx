@@ -1,12 +1,11 @@
-
-import './App.css'
+import AppRoutes from './route';
 
 function App() {
   return (
     <div className="min-h-screen bg-base-200">
-      <h1 className="text-5xl text-center pt-20">Nhà hàng XYZ - Menu Tablet</h1>
+      <AppRoutes />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

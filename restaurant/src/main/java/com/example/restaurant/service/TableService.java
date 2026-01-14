@@ -2,6 +2,8 @@ package com.example.restaurant.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +18,14 @@ public class TableService {
     private final OrderRepository orderRepository; 
     private final WebSocketNotificationService wsNotificationService;
 
-    public TableService(TableRepository tableRepository1, OrderRepository orderRepository1, WebSocketNotificationService wsNotificationService1){
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    public TableService(TableRepository tableRepository1, OrderRepository orderRepository1, WebSocketNotificationService wsNotificationService1, SimpMessagingTemplate messagingTemplate1){
         this.tableRepository = tableRepository1;
         this.orderRepository = orderRepository1;
         this.wsNotificationService = wsNotificationService1;
+        this.messagingTemplate = messagingTemplate1;
     }
 
     public TableEntity getTableById(Integer id){

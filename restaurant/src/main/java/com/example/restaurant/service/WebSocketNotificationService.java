@@ -17,6 +17,8 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class WebSocketNotificationService {
@@ -24,6 +26,7 @@ public class WebSocketNotificationService {
     private final SimpMessagingTemplate messagingTemplate;
     private final TableRepository tableRepository;
     private final OrderRepository orderRepository;
+    private static final Logger log = LoggerFactory.getLogger(WebSocketNotificationService.class);
 
     public WebSocketNotificationService(SimpMessagingTemplate messagingTemplate,
             TableRepository tableRepository,
@@ -52,10 +55,14 @@ public class WebSocketNotificationService {
                 .collect(Collectors.toList());
 
         TableStatusUpdate update = new TableStatusUpdate(tableResponses);
+        log.info("Chuẩn bị gửi update với {} bàn (sample first: {})", tableResponses.size(), 
+             tableResponses.isEmpty() ? "empty" : tableResponses.get(0));
         try {
             messagingTemplate.convertAndSend("/topic/tables", update);
+            log.info("GỬI THÀNH CÔNG realtime table update tới /topic/tables");
         } catch (Exception e) {
             System.err.print("lỗi websocket " + e.getMessage());
+            log.error("LỖI GỬI WebSocket table update", e);
         }
     }
 
