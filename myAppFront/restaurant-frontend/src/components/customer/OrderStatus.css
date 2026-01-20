@@ -1,0 +1,257 @@
+.order-status-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.status-header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
+}
+
+.connection-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.connection-badge.connected {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.connection-badge.disconnected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.no-order {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.no-order h2 {
+  font-size: 2rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.no-order p {
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.status-card {
+  background: white;
+  border: 3px solid;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 0 auto 20px;
+  color: white;
+}
+
+.status-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.status-time {
+  color: #666;
+  font-size: 1rem;
+}
+
+.order-details {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.order-details h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.order-items-list {
+  margin-bottom: 20px;
+}
+
+.order-item-row {
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item-row:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.item-quantity {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.item-notes {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 5px 0;
+  font-style: italic;
+}
+
+.item-price {
+  text-align: right;
+  font-weight: bold;
+  color: #28a745;
+  font-size: 1.1rem;
+  margin-top: 5px;
+}
+
+.order-notes-display {
+  background: #fff3cd;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  border-left: 4px solid #ffc107;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 20px 0;
+  border-top: 2px solid #f0f0f0;
+  margin-top: 15px;
+}
+
+.total-amount {
+  color: #dc3545;
+}
+
+.order-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-step {
+  text-align: center;
+  padding: 15px 10px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.timeline-step.completed {
+  background: #28a745;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .status-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .status-card {
+    padding: 20px;
+  }
+  
+  .status-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  
+  .status-text {
+    font-size: 1.3rem;
+  }
+  
+  .order-timeline {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .item-name {
+    font-size: 1rem;
+  }
+  
+  .order-total {
+    font-size: 1.2rem;
+  }
+
+/* Nút đặt thêm món */
+.add-more-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.add-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.add-more-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+}
