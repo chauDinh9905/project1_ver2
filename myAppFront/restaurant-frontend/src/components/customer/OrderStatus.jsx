@@ -28,7 +28,7 @@ export default function OrderStatus({ tableId, onAddMoreItems }) {  // ⭐ Thêm
   useEffect(() => {
     if (!currentTableId) return;
 
-    const subscription = subscribe(`/topic/order/${currentTableId}`, (data) => {
+    const subscription = subscribe(`/topic/orders/${currentTableId}`, (data) => {
       console.log('Order update received:', data);
       
       if (data.status === 'NO_ACTIVE_ORDER') {

@@ -210,6 +210,9 @@ export default function MenuManagement({ onBack }) {
                   onChange={handleInputChange}
                   placeholder="https://..."
                 />
+                <small style={{ color: '#666', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                Tìm ảnh miễn phí: <a href="https://unsplash.com/s/photos/food" target="_blank" rel="noopener noreferrer">Unsplash</a>
+                </small>
               </div>
             </div>
 
@@ -223,6 +226,19 @@ export default function MenuManagement({ onBack }) {
                 rows="3"
               />
             </div>
+            
+            {formData.image && (
+            <div className="image-preview">
+              <label>Xem trước:</label>
+              <img 
+                src={formData.image} 
+                alt="Preview" 
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/400x250?text=Invalid+URL';
+                }}
+              />
+            </div>
+          )}
 
             <div className="form-group checkbox-group">
               <label>
@@ -259,6 +275,20 @@ export default function MenuManagement({ onBack }) {
               <div className="items-grid">
                 {items.map(item => (
                   <div key={item.id} className="menu-item-card-admin">
+
+                    {item.image && (
+                    <div className="item-image">
+                      <img 
+                        src={item.image} 
+                        alt={item.name}
+                        onError={(e) => {
+                          console.error('Failed to load image:', item.image);
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+
                     <div className="item-header">
                       <h3>{item.name}</h3>
                       <span className={`status-badge ${item.available ? 'available' : 'unavailable'}`}>

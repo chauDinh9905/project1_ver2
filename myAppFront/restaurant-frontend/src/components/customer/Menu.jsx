@@ -161,6 +161,18 @@ export default function Menu({ tableId, onOrderCreated }) {
                   .filter(item => item.category?.id === activeCategory)
                   .map(item => (
                     <div key={item.id} className="menu-item-card">
+                      {item.image && (
+                        <div className="menu-item-image">
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            onError={(e) => {
+                              console.error('Failed to load image:', item.image);
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
                       <div className="item-info">
                         <h3>{item.name}</h3>
                         <p className="item-description">{item.description}</p>
