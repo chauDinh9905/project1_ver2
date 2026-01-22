@@ -79,7 +79,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .requestMatchers(HttpMethod.GET, "/api/order/table/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/order").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/order/*").permitAll()
-            .requestMatchers(HttpMethod.PUT, "/api/order/*/status").permitAll()  // ← Thêm dòng này (tạm cho dev)
+            .requestMatchers(HttpMethod.PUT, "/api/order/*/status").permitAll()  //
             .requestMatchers(HttpMethod.POST, "/api/table/*/release").permitAll()
             
             // ========== ADMIN ENDPOINTS (ĐẶT SAU PUBLIC) ==========
@@ -89,7 +89,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             
             // Tables - Admin
             .requestMatchers(HttpMethod.POST, "/api/table/*/release").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/table").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/table").hasAuthority("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/api/table/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/table/**").hasRole("ADMIN")
             
