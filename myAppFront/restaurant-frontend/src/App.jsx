@@ -5,6 +5,7 @@ import OrderStatus from './components/customer/OrderStatus.jsx';
 import AdminLogin from './components/admin/Login.jsx';
 import AdminDashboard from './components/admin/Dashboard.jsx';
 import MenuManagement from './components/admin/MenuManagement.jsx';
+import TableManagement from './components/admin/TableManagement.jsx';
 import { tableApi } from './services/api';
 import authService from './services/authService';
 import './App.css';
@@ -187,6 +188,12 @@ function App() {
 
             {currentView === 'menu' && isAuthenticated && (  // ⭐ ADMIN MENU GIỮ NGUYÊN
               <MenuManagement 
+                onBack={() => setCurrentView('dashboard')}
+              />
+            )}
+
+            {currentView === 'tables' && isAuthenticated && (
+              <TableManagement 
                 onBack={() => setCurrentView('dashboard')}
               />
             )}

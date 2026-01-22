@@ -77,4 +77,5 @@ public class TableController {
         tableService.releaseTable(id);
         return ResponseEntity.ok().build();
     }
+    
 }

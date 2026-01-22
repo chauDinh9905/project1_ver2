@@ -21,7 +21,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "table_id", referencedColumnName = "id")
     private TableEntity table;
 
@@ -42,7 +42,7 @@ public class Order {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
 

@@ -40,48 +40,73 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    @Bean
+   @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            //PUBLIC ENDPOINTS 
+            // ========== PUBLIC ENDPOINTS ==========
             
             // Authentication
             .requestMatchers("/api/auth/**").permitAll()
             
-            // Table
-            .requestMatchers("/api/table/**", "/api/table/all/**").permitAll()
+            // WebSocket - ĐẶT LÊN ĐẦU
+            .requestMatchers("/ws/**").permitAll()
             
-            // menu-item
+            // Tables - Khách
             .requestMatchers(
-                "/api/menu-item/available",
-                "/api/menu-item/all/available", 
-                "/api/menu-item/all/**",
-                "/api/menu-item/{id}"
+                "/api/table",
+                "/api/table/available",
+                "/api/table/all-capacity/**",
+                "/api/table/all-status/**"
             ).permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/table/*/occupy").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/table/*").permitAll()
+            
+            // Menu Items - Khách xem (ƯU TIÊN CAO)
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/available").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/all/available").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/all/*").permitAll()  // Category-specific
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/search").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/*").permitAll()  // Single item
             
             // Categories
             .requestMatchers("/api/category/**").permitAll()
             
             // Orders - Khách
             .requestMatchers(HttpMethod.GET, "/api/order/table/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/order/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/order").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/order/*").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/order/*/status").permitAll()  // ← Thêm dòng này (tạm cho dev)
+            .requestMatchers(HttpMethod.POST, "/api/table/*/release").permitAll()
             
-            // WebSocket
-            .requestMatchers("/ws/**").permitAll()
+            // ========== ADMIN ENDPOINTS (ĐẶT SAU PUBLIC) ==========
             
-            // ADMIN ENDPOINTS
+            // Admin general
             .requestMatchers("/api/admin/**").hasRole("ADMIN")
-            .requestMatchers("/api/menu-item/all").hasRole("ADMIN")
+            
+            // Tables - Admin
+            .requestMatchers(HttpMethod.POST, "/api/table/*/release").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/table").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/table/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/table/**").hasRole("ADMIN")
+            
+            // Menu Items - Admin (CHỈ CÒN WRITE OPERATIONS)
+            .requestMatchers(HttpMethod.GET, "/api/menu-item/all").hasRole("ADMIN")  // List all for admin
             .requestMatchers(HttpMethod.POST, "/api/menu-item").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/api/menu-item/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PATCH, "/api/menu-item/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/api/menu-item/**").hasRole("ADMIN")
             
-            // Tất cả khác
+            // Orders - Admin
+            .requestMatchers(HttpMethod.PUT, "/api/order/*/status").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/order/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/order/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/api/order/all/**").hasRole("ADMIN")
+            
+            // Tất cả requests khác cần authenticate
             .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

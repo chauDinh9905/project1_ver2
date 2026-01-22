@@ -177,6 +177,84 @@ public class OrderService {
         }
         
         // Gọi method createOrder đã có
-        return createOrder(request.getTableId(), orderItems, request.getNotes());
+        Order savedOrder = createOrder(request.getTableId(), orderItems, request.getNotes());
+        wsNotificationService.sendOrderToAdmin(savedOrder);
+        return savedOrder;
+    }
+
+
+    @Transactional
+    public Order addItemsToOrder(Integer orderId, List<CreateOrderItemRequest> itemRequests) {
+        Order order = getOrderById(orderId);
+        
+        // Kiểm tra order đã hoàn thành chưa
+        if ("COMPLETED".equals(order.getStatus())) {
+            throw new RuntimeException("Không thể thêm món vào đơn hàng đã hoàn thành");
+        }
+        
+        BigDecimal additionalAmount = BigDecimal.ZERO;
+        
+        for (CreateOrderItemRequest itemReq : itemRequests) {
+            MenuItem menuItem = menuItemRepository.findById(itemReq.getMenuItemId())
+                .orElseThrow(() -> new RuntimeException("Món ăn ID " + itemReq.getMenuItemId() + " không tồn tại"));
+            
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setMenuItem(menuItem);
+            orderItem.setQuantity(itemReq.getQuantity());
+            orderItem.setPrice(menuItem.getPrice());
+            orderItem.setNotes(itemReq.getNotes());
+            
+            order.getOrderItems().add(orderItem);
+            
+            BigDecimal itemTotal = menuItem.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity()));
+            additionalAmount = additionalAmount.add(itemTotal);
+        }
+        
+        // Cập nhật tổng tiền
+        order.setTotalPrice(order.getTotalPrice().add(additionalAmount));
+        
+        Order updatedOrder = orderRepository.save(order);
+        
+        // Gửi WebSocket notification
+        wsNotificationService.sendOrderUpdate(order.getTable().getId());
+        wsNotificationService.sendAdminDashboardUpdate();
+        
+        return updatedOrder;
+    }
+
+    @Transactional
+    public Order createOrAddToOrder(Integer tableId, List<CreateOrderItemRequest> itemRequests, String notes) {
+        // Tìm order active của bàn
+        List<Order> orders = orderRepository.findByTableIdOrderByCreateAtDesc(tableId);
+        Order activeOrder = orders.stream()
+                .filter(o -> !"COMPLETED".equals(o.getStatus()))
+                .findFirst()
+                .orElse(null);
+        
+        if (activeOrder != null) {
+            // ⭐ CÓ ORDER ACTIVE → THÊM MÓN VÀO ORDER ĐÓ
+            System.out.println("✅ Found active order #" + activeOrder.getId() + " for table " + tableId);
+            return addItemsToOrder(activeOrder.getId(), itemRequests);
+        } else {
+            // ⭐ KHÔNG CÓ ORDER → TẠO MỚI
+            System.out.println("✅ No active order, creating new order for table " + tableId);
+            
+            List<OrderItem> orderItems = new ArrayList<>();
+            for (CreateOrderItemRequest itemReq : itemRequests) {
+                MenuItem menuItem = menuItemRepository.findById(itemReq.getMenuItemId())
+                    .orElseThrow(() -> new RuntimeException("Món ăn ID " + itemReq.getMenuItemId() + " không tồn tại"));
+                
+                OrderItem orderItem = new OrderItem();
+                orderItem.setMenuItem(menuItem);
+                orderItem.setQuantity(itemReq.getQuantity());
+                orderItem.setPrice(menuItem.getPrice());
+                orderItem.setNotes(itemReq.getNotes());
+                
+                orderItems.add(orderItem);
+            }
+            
+            return createOrder(tableId, orderItems, notes);
+        }
     }
 }

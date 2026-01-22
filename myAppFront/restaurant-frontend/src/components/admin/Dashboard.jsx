@@ -132,6 +132,10 @@ export default function AdminDashboard({ onNavigate, onLogout }) {
             {isConnected ? '🟢 Live' : '🔴 Offline'}
           </div>
           
+          <button className="nav-button" onClick={() => onNavigate('tables')}>
+            🪑 Quản lý Bàn
+          </button>
+
           <button className="nav-button" onClick={() => onNavigate('menu')}>
             🍽️ Quản lý Menu
           </button>

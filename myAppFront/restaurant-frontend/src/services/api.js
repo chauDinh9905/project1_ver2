@@ -13,16 +13,20 @@ const api = axios.create({
 
 // ========== TABLE APIs ==========
 export const tableApi = {
-  // ✅ SỬA: /tables → /table
+  //  SỬA: /tables → /table
   getAllTables: () => api.get('/table'),
   
   getAvailableTables: () => api.get('/table/available'),
   
-  // ✅ SỬA: /tables/{id}/occupy → /table/{id}/occupy
+  //  SỬA: /tables/{id}/occupy → /table/{id}/occupy
   occupyTable: (tableId) => api.post(`/table/${tableId}/occupy`),
   
-  // ✅ SỬA: /tables/{id}/release → /table/{id}/release
+  //  SỬA: /tables/{id}/release → /table/{id}/release
   releaseTable: (tableId) => api.post(`/table/${tableId}/release`),
+
+  createTable: (data) => api.post('/table', data),
+  updateTable: (id, data) => api.put(`/table/${id}`, data),
+  deleteTable: (id) => api.delete(`/table/${id}`),
 };
 
 // ========== MENU APIs ==========

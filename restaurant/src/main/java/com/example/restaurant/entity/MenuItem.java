@@ -2,7 +2,6 @@ package com.example.restaurant.entity;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,8 +29,7 @@ public class MenuItem {
     @Column(name = "available")
     private boolean available = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 }

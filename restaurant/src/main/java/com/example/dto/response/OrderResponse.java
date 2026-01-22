@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +24,6 @@ public class OrderResponse {
     private String notes;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    @JsonProperty("items")
     List<OrderItemResponse> orderItems;
 }

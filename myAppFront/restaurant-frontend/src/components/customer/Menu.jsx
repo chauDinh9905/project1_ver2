@@ -27,12 +27,15 @@ export default function Menu({ tableId, onOrderCreated }) {
       const response = await menuApi.getAvailableMenu();
       console.log('🔍 Menu API Response:', response.data);
       console.log('🔍 Total items:', response.data.length);
+
+      const availableItems = response.data.filter(item => item.available === true);
+      console.log('✅ Available items after filter:', availableItems.length);
       
-      response.data.forEach(item => {
-        console.log(`Item: ${item.name}, Category:`, item.category);
-      });
+      availableItems.forEach(item => {
+      console.log(`Item: ${item.name}, Available: ${item.available}, Category:`, item.category);
+    });
       
-      setMenuItems(response.data);
+      setMenuItems(availableItems);
     } catch (error) {
       console.error('Error loading menu:', error);
       alert('Không thể tải menu');
